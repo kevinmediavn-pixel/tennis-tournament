@@ -2,12 +2,14 @@ import { useParams, NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import { useTournament } from '../../hooks/useTournament';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useMatches } from '../../hooks/useMatches';
+import { useCourts } from '../../hooks/useCourts';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import PlayerForm from '../../components/admin/PlayerForm';
 import PlayerTable from '../../components/admin/PlayerTable';
 import ExcelImport from '../../components/admin/ExcelImport';
 import MatchScheduler from '../../components/admin/MatchScheduler';
 import ResultEntry from '../../components/admin/ResultEntry';
+import CourtManager from '../../components/admin/CourtManager';
 import BracketView from '../../components/public/BracketView';
 import { addPlayer, saveMatches, updateTournament } from '../../firebase/firestore';
 import { generateBracket } from '../../utils/bracketGenerator';
@@ -22,6 +24,7 @@ export default function TournamentManage() {
   const { tournament, loading } = useTournament(tid);
   const { players } = usePlayers(tid);
   const { matches } = useMatches(tid);
+  const { courts } = useCourts(tid);
   const [generating, setGenerating] = useState(false);
 
   if (loading) return <LoadingSpinner />;
@@ -50,6 +53,7 @@ export default function TournamentManage() {
   const tabs = [
     { to: 'players', label: 'VĐV' },
     { to: 'draw', label: 'Nhánh đấu' },
+    { to: 'courts', label: 'Sân đấu' },
     { to: 'schedule', label: 'Lịch thi đấu' },
     { to: 'results', label: 'Kết quả' },
   ];
@@ -107,6 +111,12 @@ export default function TournamentManage() {
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h2 className="font-semibold text-gray-800 mb-4">Nhánh đấu</h2>
             <BracketView matches={matches} />
+          </div>
+        } />
+        <Route path="courts" element={
+          <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <h2 className="font-semibold text-gray-800 mb-4">Quản lý sân đấu</h2>
+            <CourtManager courts={courts} matches={matches} tournamentId={tid} />
           </div>
         } />
         <Route path="schedule" element={

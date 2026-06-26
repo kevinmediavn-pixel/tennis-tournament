@@ -3,7 +3,7 @@ import {
   onSnapshot, query, orderBy, Timestamp, writeBatch,
 } from 'firebase/firestore';
 import { db } from './config';
-import type { Tournament, Player, Match, TournamentFormData, PlayerFormData } from '../types';
+import type { Tournament, Player, Match, TournamentFormData, PlayerFormData, Court, CourtFormData } from '../types';
 
 // --- Tournaments ---
 export const tournamentsCol = () => collection(db, 'tournaments');
@@ -98,4 +98,35 @@ export const updateMatchBatch = async (tournamentId: string, matches: Match[]): 
 export const subscribeMatches = (tournamentId: string, cb: (m: Match[]) => void) =>
   onSnapshot(query(matchesCol(tournamentId), orderBy('round'), orderBy('matchNumber')), snap =>
     cb(snap.docs.map(d => ({ id: d.id, ...d.data() }) as Match))
+  );
+
+// --- Courts ---
+export const courtsCol = (tournamentId: string) =>
+  collection(db, 'tournaments', tournamentId, 'courts');
+
+export const addCourt = async (tournamentId: string, data: CourtFormData): Promise<string> => {
+  const ref = await addDoc(courtsCol(tournamentId), {
+    ...data,
+    status: 'available',
+    currentMatchId: null,
+    currentMatchLabel: '',
+    nextMatchId: null,
+    nextMatchLabel: '',
+    updatedAt: Timestamp.now(),
+  });
+  return ref.id;
+};
+
+export const updateCourt = (tournamentId: string, courtId: string, data: Partial<Court>) =>
+  updateDoc(doc(db, 'tournaments', tournamentId, 'courts', courtId), {
+    ...data as Record<string, unknown>,
+    updatedAt: Timestamp.now(),
+  });
+
+export const deleteCourt = (tournamentId: string, courtId: string) =>
+  deleteDoc(doc(db, 'tournaments', tournamentId, 'courts', courtId));
+
+export const subscribeCourts = (tournamentId: string, cb: (c: Court[]) => void) =>
+  onSnapshot(query(courtsCol(tournamentId), orderBy('name')), snap =>
+    cb(snap.docs.map(d => ({ id: d.id, ...d.data() }) as Court))
   );

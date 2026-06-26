@@ -2,9 +2,11 @@ import { useParams, NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import { useTournament } from '../../hooks/useTournament';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useMatches } from '../../hooks/useMatches';
+import { useCourts } from '../../hooks/useCourts';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import BracketView from '../../components/public/BracketView';
 import ScheduleView from '../../components/public/ScheduleView';
+import CourtBoard from '../../components/public/CourtBoard';
 import StatusBadge from '../../components/shared/StatusBadge';
 import { MapPin, Calendar, Users, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -17,6 +19,7 @@ export default function TournamentPublic() {
   const { tournament, loading } = useTournament(tid);
   const { players } = usePlayers(tid);
   const { matches } = useMatches(tid);
+  const { courts } = useCourts(tid);
 
   if (loading) return <LoadingSpinner />;
   if (!tournament) return <div className="text-center py-16 text-gray-400">Không tìm thấy giải đấu</div>;
@@ -25,6 +28,7 @@ export default function TournamentPublic() {
 
   const tabs = [
     { to: 'draw', label: 'Nhánh đấu' },
+    { to: 'courts', label: `Sân đấu${courts.length ? ` (${courts.length})` : ''}` },
     { to: 'schedule', label: 'Lịch thi đấu' },
     { to: 'players', label: 'VĐV' },
   ];
@@ -73,6 +77,7 @@ export default function TournamentPublic() {
       <Routes>
         <Route index element={<Navigate to="draw" replace />} />
         <Route path="draw" element={<BracketView matches={matches} />} />
+        <Route path="courts" element={<CourtBoard courts={courts} />} />
         <Route path="schedule" element={<ScheduleView matches={matches} />} />
         <Route path="players" element={
           <div className="overflow-x-auto rounded-lg border border-gray-200">

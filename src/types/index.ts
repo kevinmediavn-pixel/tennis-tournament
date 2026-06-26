@@ -70,6 +70,28 @@ export interface PlayerFormData {
   rankingPoints: number;
 }
 
+export type CourtStatus = 'available' | 'in_play' | 'maintenance' | 'closed';
+export type CourtSurface = 'hard' | 'clay' | 'grass' | 'indoor';
+
+export interface Court {
+  id: string;
+  name: string;                    // Tên sân, vd: "Sân 1", "Court A"
+  surface: CourtSurface;           // Mặt sân
+  description: string;             // Mô tả / vị trí
+  status: CourtStatus;             // Trạng thái hiện tại
+  currentMatchId: string | null;   // Trận đang diễn ra
+  currentMatchLabel: string;       // Mô tả trận: "Nguyễn A vs Trần B"
+  nextMatchId: string | null;      // Trận tiếp theo
+  nextMatchLabel: string;
+  updatedAt: Timestamp;
+}
+
+export interface CourtFormData {
+  name: string;
+  surface: CourtSurface;
+  description: string;
+}
+
 export interface ExcelPlayerRow {
   stt?: number;
   name: string;
