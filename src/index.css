@@ -8,12 +8,16 @@
   --color-dark: #1A1A1A;
   --color-muted: #6B7280;
   --color-court: #2E7D32;
+  --color-brand: #00C851;
+  --color-site-bg: #0A0F1E;
+  --color-card-bg: #131929;
+  --color-card-border: #1E2D45;
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #FAFAFA;
-  color: #1A1A1A;
+  background-color: #0A0F1E;
+  color: #F1F5F9;
   margin: 0;
 }
 

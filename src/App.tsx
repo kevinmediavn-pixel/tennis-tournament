@@ -20,7 +20,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#FAFAFA]">
+      <div className="min-h-screen bg-[#0A0F1E]">
         <Navbar />
         <main>
           <Routes>
